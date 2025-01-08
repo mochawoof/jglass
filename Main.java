@@ -11,10 +11,11 @@ class Main {
     private static long lastFrame = 0;
     private static Image cursor;
     
-    private static final int FRAME_LIMIT = (int) ((double) 1000 / 60);
+    private static int zoom = 1;
     
     private static void frame() {
-        int frameDelta = (int) (System.currentTimeMillis() - (lastFrame + FRAME_LIMIT));
+        int frameCap = (int) ((double) 1000 / Integer.parseInt(Settings.get("Frame_Cap")));
+        int frameDelta = (int) (System.currentTimeMillis() - (lastFrame + frameCap));
         try {
             if (frameDelta < 0) {
                 Thread.sleep(Math.abs(frameDelta));
@@ -38,15 +39,34 @@ class Main {
         
         f.setLayout(new BorderLayout());
         f.getContentPane().setBackground(Color.BLACK);
-        f.setIconImage(Res.getAsImage("icon.png"));
+        f.setIconImage(Res.getAsImage("icon-sml.png"));
         
-        //JToolBar tb = new JToolBar("Controls"); f.add(tb, BorderLayout.PAGE_START);
+        JToolBar tb = new JToolBar("Controls");
+        f.add(tb, BorderLayout.PAGE_START);
+        
+        JButton settingsB = new JButton("Settings");
+        tb.add(settingsB);
+        settingsB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Settings.show(f);
+            }
+        });
+        
+        JButton helpB = new JButton("Help");
+        tb.add(helpB);
+        helpB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(f, "JGlass v1.0.", "About", JOptionPane.PLAIN_MESSAGE, new ImageIcon(f.getIconImage()));
+            }
+        });
         
         cursor = Res.getAsImage("left_ptr.png");
         
         f.add(new JComponent() {
             public void paintComponent(Graphics g) {
-                g.drawImage(buf.getScaledInstance(getWidth(), getHeight(), Image.SCALE_FAST), 0, 0, null);
+                int scaleMode = Settings.get("Scale_Mode").equals("Smooth") ? Image.SCALE_SMOOTH : Image.SCALE_FAST;
+                Image scaled = buf;//buf.getScaledInstance(getWidth(), getHeight(), scaleMode);
+                g.drawImage(scaled, 0, 0, null);
             }
         }, BorderLayout.CENTER);
 
@@ -54,11 +74,14 @@ class Main {
             r = new Robot() {
                 public BufferedImage createScreenCapture(Rectangle r) {
                     BufferedImage b = super.createScreenCapture(r);
-                    Graphics g = b.getGraphics();
                     
-                    Point m = MouseInfo.getPointerInfo().getLocation();
-                    g.drawImage(cursor, (int) m.getX() - 6, (int) m.getY() - 2, null);
-                    //g.setColor(Color.WHITE); g.fillRect((int) m.getX(), (int) m.getY(), 10, 10);
+                    if (Settings.get("Cursor").equals("Show")) {
+                        Graphics g = b.getGraphics();
+                    
+                        Point m = MouseInfo.getPointerInfo().getLocation();
+                        g.drawImage(cursor, (int) m.getX() - 6, (int) m.getY() - 2, null);
+                    }
+                    
                     return b;
                 }
             };
