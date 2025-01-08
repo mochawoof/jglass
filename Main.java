@@ -55,6 +55,14 @@ class Main {
         int w = (int) ((double) dp.getWidth() / zoom);
         int h = (int) ((double) dp.getHeight() / zoom);
         buf = r.createScreenCapture(new Rectangle(x, y, w, h));
+        
+        if (Settings.get("Cursor_Visibility").equals("Show")) {
+            Graphics g = buf.getGraphics();
+            
+            Point m = MouseInfo.getPointerInfo().getLocation();
+            g.drawImage(cursor, (int) m.getX() - 6 - x, (int) m.getY() - 2 - y, null);
+        }
+        
         f.repaint();
         
         lastFrame = System.currentTimeMillis();   
@@ -65,6 +73,14 @@ class Main {
         zoom = z;
         zoom = clamp(zoom, 1.0, 15.0);
         zoomL.setText(df.format(zoom) + "x");
+        clampXY();
+    }
+    
+    private static void clampXY() {
+        int theGreatOneFourthw = (int) ((double) dp.getWidth() / 4);
+        int theGreatOneFourthh = (int) ((double) dp.getHeight() / 4);
+        x = (int) clamp(x, 0 - theGreatOneFourthw, dp.getWidth() - (dp.getWidth() / zoom) + theGreatOneFourthw);
+        y = (int) clamp(y, 0 - theGreatOneFourthh, dp.getHeight() - (dp.getHeight() / zoom) + theGreatOneFourthh);
     }
     
     public static void main(String[] args) {
@@ -80,7 +96,7 @@ class Main {
         }
         
         f = new JFrame("JGlass");
-        f.setSize(300, 200);
+        f.setSize(500, 300);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setLocationRelativeTo(null);
         f.setAlwaysOnTop(true);
@@ -117,7 +133,19 @@ class Main {
         tb.add(helpB);
         helpB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(f, "JGlass v1.0.", "About", JOptionPane.PLAIN_MESSAGE, new ImageIcon(f.getIconImage()));
+                JOptionPane.showMessageDialog(f, 
+                "Scroll to zoom in or out.\nClick and drag to move the view.\nIf you have performance issues, try using the Fast scale mode setting.", 
+                "Help", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        
+        JButton aboutB = new JButton("About");
+        tb.add(aboutB);
+        aboutB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(f, 
+                "JGlass v1.0.\nJava " + System.getProperty("java.version") + "\nhttps://github.com/mochawoof/jglass", 
+                "About", JOptionPane.PLAIN_MESSAGE, new ImageIcon(f.getIconImage()));
             }
         });
         
@@ -157,26 +185,14 @@ class Main {
                 
                 x += mx * 2;
                 y += my * 2;
+                clampXY();
                 
                 dLLoc = dCLoc;
             }
         });
 
         try {
-            r = new Robot() {
-                public BufferedImage createScreenCapture(Rectangle r) {
-                    BufferedImage b = super.createScreenCapture(r);
-                    
-                    if (Settings.get("Cursor").equals("Show")) {
-                        Graphics g = b.getGraphics();
-                    
-                        Point m = MouseInfo.getPointerInfo().getLocation();
-                        g.drawImage(cursor, (int) m.getX() - 6 - x, (int) m.getY() - 2 - y, null);
-                    }
-                    
-                    return b;
-                }
-            };
+            r = new Robot();
         } catch (Exception e) {
             e.printStackTrace();
             error("Failed to start JGlass. Please try again.");

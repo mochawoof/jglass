@@ -22,7 +22,8 @@ class Settings {
     public static HashMap<String, String[]> defaults = new HashMap<String, String[]>() {{
         put("Frame_Cap", new String[] {"60", "30", "15"});
         put("Scale_Mode", new String[] {"Smooth", "Fast"});
-        put("Cursor", new String[] {"Show", "Hide"});
+        put("Cursor_Visibility", new String[] {"Show", "Hide"});
+        put("Cursor Color", new String[] {"Light", "Dark"});
     }};
     
     private static void applyDefaults() {
