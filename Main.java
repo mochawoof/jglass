@@ -11,7 +11,11 @@ class Main {
     private static long lastFrame = 0;
     private static Image cursor;
     
-    private static int zoom = 1;
+    private static int zoom = 2;
+    
+    private static void error(String msg) {
+        JOptionPane.showMessageDialog(f, msg, "Error", JOptionPane.ERROR_MESSAGE);
+    }
     
     private static void frame() {
         int frameCap = (int) ((double) 1000 / Integer.parseInt(Settings.get("Frame_Cap")));
@@ -23,7 +27,10 @@ class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        buf = r.createScreenCapture(new Rectangle(0, 0, dp.getWidth(), dp.getHeight()));
+        
+        int w = (int) ((double) dp.getWidth() / zoom);
+        int h = (int) ((double) dp.getHeight() / zoom);
+        buf = r.createScreenCapture(new Rectangle(0, 0, w, h));
         f.repaint();
         
         lastFrame = System.currentTimeMillis();   
@@ -87,6 +94,7 @@ class Main {
             };
         } catch (Exception e) {
             e.printStackTrace();
+            error("Failed to start JGlass. Please try again.");
             System.exit(0);
         }
         
