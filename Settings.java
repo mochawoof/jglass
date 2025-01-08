@@ -23,7 +23,7 @@ class Settings {
         put("Frame_Cap", new String[] {"60", "30", "15"});
         put("Scale_Mode", new String[] {"Smooth", "Fast"});
         put("Cursor_Visibility", new String[] {"Show", "Hide"});
-        put("Cursor Color", new String[] {"Light", "Dark"});
+        put("Cursor_Theme", new String[] {"Light", "Dark"});
     }};
     
     private static void applyDefaults() {

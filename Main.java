@@ -82,6 +82,15 @@ class Main {
         x = (int) clamp(x, 0 - theGreatOneFourthw, dp.getWidth() - (dp.getWidth() / zoom) + theGreatOneFourthw);
         y = (int) clamp(y, 0 - theGreatOneFourthh, dp.getHeight() - (dp.getHeight() / zoom) + theGreatOneFourthh);
     }
+
+    private static void updateCursor() {
+        try {
+            cursor = Res.getAsImage("cursor-" + Settings.get("Cursor_Theme").toLowerCase() + ".png");
+        } catch (Exception e) {
+            e.printStackTrace();
+            cursor = Res.getAsImage("cursor-light.png");
+        }
+    }
     
     public static void main(String[] args) {
         lastFrame = 0;
@@ -109,6 +118,8 @@ class Main {
         f.add(tb, BorderLayout.PAGE_START);
         
         df = new DecimalFormat("0.0");
+
+        updateCursor();
         
         zoomL = new JButton(df.format(zoom) + "x");
         tb.add(zoomL);
@@ -125,7 +136,10 @@ class Main {
         tb.add(settingsB);
         settingsB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Settings.show(f);
+                int r = Settings.show(f);
+                if (r == Settings.OK || r == Settings.RESET) {
+                    updateCursor();
+                }
             }
         });
         
@@ -134,7 +148,7 @@ class Main {
         helpB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(f, 
-                "Scroll to zoom in or out.\nClick and drag to move the view.\nIf you have performance issues, try using the Fast scale mode setting.", 
+                "Scroll to zoom in or out.\nClick and drag to move the view.\nIf you want an unobstructed view, you can move the toolbar by clicking and dragging the grip on its left.\nIf you have performance issues, try using the Fast scale mode setting.", 
                 "Help", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -144,12 +158,10 @@ class Main {
         aboutB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(f, 
-                "JGlass v1.0.\nJava " + System.getProperty("java.version") + "\nhttps://github.com/mochawoof/jglass", 
+                "JGlass\nA cross-platform screen magnifier.\n\nVersion 1.0\nJava " + System.getProperty("java.version") + "\nhttps://github.com/mochawoof/jglass", 
                 "About", JOptionPane.PLAIN_MESSAGE, new ImageIcon(f.getIconImage()));
             }
         });
-        
-        cursor = Res.getAsImage("left_ptr.png");
         
         JComponent c = new JComponent() {
             public void paintComponent(Graphics g) {
