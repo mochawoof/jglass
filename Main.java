@@ -43,10 +43,10 @@ class Main {
         fpsCap = clamp(fpsCap, 1, 240);
         int frameCap = (int) ((double) 1000 / fpsCap);
         
-        int frameDelta = (int) (System.currentTimeMillis() - (lastFrame + frameCap));
+        int frameDelta = (int) ((lastFrame + frameCap) - System.currentTimeMillis() );
         try {
-            if (frameDelta < 0) {
-                Thread.sleep(Math.abs(frameDelta));
+            if (frameDelta > 0) {
+                Thread.sleep(frameDelta);
             }
         } catch (Exception e) {
             e.printStackTrace();
