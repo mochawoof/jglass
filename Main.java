@@ -65,7 +65,7 @@ class Main {
         f.add(new JComponent() {
             public void paintComponent(Graphics g) {
                 int scaleMode = Settings.get("Scale_Mode").equals("Smooth") ? Image.SCALE_SMOOTH : Image.SCALE_FAST;
-                Image scaled = buf;//buf.getScaledInstance(getWidth(), getHeight(), scaleMode);
+                Image scaled = buf.getScaledInstance(getWidth(), getHeight(), scaleMode);
                 g.drawImage(scaled, 0, 0, null);
             }
         }, BorderLayout.CENTER);
