@@ -39,15 +39,18 @@ class Main {
     }
     
     private static void frame() {
-        int fpsCap = Integer.parseInt(Settings.get("Frame_Cap"));
-        fpsCap = clamp(fpsCap, 1, 240);
+        int fpsCap = 60;
+        try {
+            fpsCap = Integer.parseInt(Settings.get("Frame_Cap"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         int frameCap = (int) ((double) 1000 / fpsCap);
         
         int frameDelta = (int) ((lastFrame + frameCap) - System.currentTimeMillis() );
+        frameDelta = clamp(frameDelta, 16, 1000);
         try {
-            if (frameDelta > 0) {
-                Thread.sleep(frameDelta);
-            }
+            Thread.sleep(frameDelta);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +76,7 @@ class Main {
         zoom = z;
         zoom = clamp(zoom, 1.0, 15.0);
         zoomL.setText(df.format(zoom) + "x");
-        clampXY();
+        //clampXY();
     }
     
     private static void clampXY() {
@@ -94,7 +97,7 @@ class Main {
     
     public static void main(String[] args) {
         lastFrame = 0;
-        zoom = 2.0;
+        zoom = 1.0;
         x = 0;
         y = 0;
         
@@ -125,7 +128,7 @@ class Main {
         tb.add(zoomL);
         zoomL.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                updateZoom(2.0);
+                updateZoom(1.0);
                 x = 0;
                 y = 0;
                 f.repaint();
@@ -197,22 +200,22 @@ class Main {
                 
                 x += mx * 2;
                 y += my * 2;
-                clampXY();
+                //clampXY();
                 
                 dLLoc = dCLoc;
             }
         });
-
+        
+        dp = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
+        
         try {
-            r = new Robot();
+            r = new Robot(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice());
         } catch (Exception e) {
             e.printStackTrace();
             error("Failed to start JGlass. Please try again.");
             System.exit(0);
         }
-        
-        dp = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
-        
+
         new Thread() {
             public void run() {
                 frame();
