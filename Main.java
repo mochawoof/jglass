@@ -56,15 +56,17 @@ class Main {
             e.printStackTrace();
         }
         
-        int w = (int) ((double) dp.getWidth() / zoom);
-        int h = (int) ((double) dp.getHeight() / zoom);
-        buf = r.createScreenCapture(new Rectangle(0, 0, w, h));
+        int w = (int) (dp.getWidth() / zoom);
+        int h = (int) (dp.getHeight() / zoom);
+        int rx = x; //TODO
+        int ry = y;
+        buf = r.createScreenCapture(new Rectangle(rx, ry, w, h));
         
         if (Settings.get("Cursor_Visibility").equals("Show")) {
             Graphics g = buf.getGraphics();
             
             Point m = MouseInfo.getPointerInfo().getLocation();
-            g.drawImage(cursor, (int) m.getX() - 6 - x, (int) m.getY() - 2 - y, null);
+            g.drawImage(cursor, (int) m.getX() - 6 - rx, (int) m.getY() - 2 - ry, null);
         }
         
         f.repaint();
@@ -172,7 +174,7 @@ class Main {
             public void paintComponent(Graphics g) {
                 int scaleMode = Settings.get("Scale_Mode").equals("Smooth") ? Image.SCALE_SMOOTH : Image.SCALE_FAST;
                 Image scaled = buf.getScaledInstance(getWidth(), getHeight(), scaleMode);
-                g.drawImage(scaled, (getWidth() / 2) - (scaled.getWidth(null) / 2), (getHeight() / 2) - (scaled.getHeight(null) / 2), null);
+                g.drawImage(scaled, 0, 0, null);
             }
         };
         f.add(c, BorderLayout.CENTER);
@@ -200,8 +202,8 @@ class Main {
                 int mx = (int) ((double) dLLoc.getX() - dCLoc.getX());
                 int my = (int) ((double) dLLoc.getY() - dCLoc.getY());
                 
-                x += mx * 2;
-                y += my * 2;
+                x += mx * 4;
+                y += my * 4;
                 //clampXY();
                 
                 dLLoc = dCLoc;
