@@ -13,6 +13,7 @@ class Main {
     private static Image cursor;
     private static JButton zoomL;
     private static DecimalFormat df;
+    private static JComponent c;
     
     private static Point dLLoc; // Delta last mouse position
     
@@ -57,7 +58,7 @@ class Main {
         
         int w = (int) ((double) dp.getWidth() / zoom);
         int h = (int) ((double) dp.getHeight() / zoom);
-        buf = r.createScreenCapture(new Rectangle(x, y, w, h));
+        buf = r.createScreenCapture(new Rectangle(0, 0, w, h));
         
         if (Settings.get("Cursor_Visibility").equals("Show")) {
             Graphics g = buf.getGraphics();
@@ -68,7 +69,7 @@ class Main {
         
         f.repaint();
         
-        lastFrame = System.currentTimeMillis();   
+        lastFrame = System.currentTimeMillis();
         frame();
     }
     
@@ -131,9 +132,10 @@ class Main {
                 updateZoom(1.0);
                 x = 0;
                 y = 0;
-                f.repaint();
             }
         });
+        
+        tb.add(Box.createGlue());
         
         JButton settingsB = new JButton("Settings");
         tb.add(settingsB);
@@ -166,11 +168,11 @@ class Main {
             }
         });
         
-        JComponent c = new JComponent() {
+        c = new JComponent() {
             public void paintComponent(Graphics g) {
                 int scaleMode = Settings.get("Scale_Mode").equals("Smooth") ? Image.SCALE_SMOOTH : Image.SCALE_FAST;
                 Image scaled = buf.getScaledInstance(getWidth(), getHeight(), scaleMode);
-                g.drawImage(scaled, 0, 0, null);
+                g.drawImage(scaled, (getWidth() / 2) - (scaled.getWidth(null) / 2), (getHeight() / 2) - (scaled.getHeight(null) / 2), null);
             }
         };
         f.add(c, BorderLayout.CENTER);
