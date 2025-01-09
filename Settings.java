@@ -20,7 +20,7 @@ class Settings {
     // Settings with a . preceding their names will not be shown to the user
     // Underscores will be shown to the user as spaces
     public static HashMap<String, String[]> defaults = new HashMap<String, String[]>() {{
-        put("Frame_Cap", new String[] {"60", "30", "15"});
+        put("Frame_Cap", new String[] {"30", "15", "5"});
         put("Scale_Mode", new String[] {"Smooth", "Fast"});
         put("Cursor_Visibility", new String[] {"Show", "Hide"});
         put("Cursor_Theme", new String[] {"Light", "Dark"});

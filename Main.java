@@ -58,8 +58,9 @@ class Main {
         
         int w = (int) (dp.getWidth() / zoom);
         int h = (int) (dp.getHeight() / zoom);
-        int rx = x; //TODO
-        int ry = y;
+        
+        int rx = (dp.getWidth() / 2) - (w / 2) + x;
+        int ry = (dp.getHeight() / 2) - (h / 2) + y;
         buf = r.createScreenCapture(new Rectangle(rx, ry, w, h));
         
         if (Settings.get("Cursor_Visibility").equals("Show")) {
@@ -155,7 +156,7 @@ class Main {
         helpB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(f, 
-                "Scroll to zoom in or out.\nClick and drag to move the view.\nIf you want an unobstructed view, you can move the toolbar by clicking and dragging the grip on its left.\nIf you have performance issues, try using the Fast scale mode setting.", 
+                "Scroll to zoom in or out.\nClick and drag to move the view.\nIf you want an unobstructed view, you can move the toolbar by clicking and dragging the grip on its left.\nIf you have performance issues, try using the Fast scale mode setting or lower the frame cap.", 
                 "Help", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -165,7 +166,7 @@ class Main {
         aboutB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(f, 
-                "JGlass\nA cross-platform screen magnifier.\n\nVersion 1.0\nJava " + System.getProperty("java.version") + "\nhttps://github.com/mochawoof/jglass", 
+                "JGlass\nA cross-platform screen magnifier.\n\nVersion 1.0\nGitHub Release\nJava " + System.getProperty("java.version"),
                 "About", JOptionPane.PLAIN_MESSAGE, new ImageIcon(f.getIconImage()));
             }
         });
